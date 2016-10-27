@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		    <style type="text/css">
+      *,*:before,*:after {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+      html{color:#000;background:#fff;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;-webkit-font-smoothing: antialiased;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+      body,div,h1,h2,h3,h4,h5,h6,hr,p,input{margin:0;padding:0;}
+      [hidden], template{display: none;}
+      body, button, input, select, textarea {font:12px/1.5 'Microsoft YaHei','\5b8b\4f53',tahoma,Helvetica, Arial, "Hiragino Sans GB","FontAwesome", sans-serif;}
+      html,body,fieldset,img,iframe,abbr,legend{border:0;}
+      ol,ul,li{list-style:none;padding:0;margin:0;}
+      a {background-color: transparent;color:#666;cursor: pointer;-webkit-text-decoration-skip: objects;}
+      a::-moz-focus-inner{border:0;}
+      a,a:hover,a:focus,a:active{text-decoration: none;cursor: pointer;}
+      input {line-height: normal;}
+      ::-webkit-input-placeholder {color: #999;opacity: 0.54;}
+      :-moz-placeholder {color: #999;opacity: 0.54;}
+      ::-moz-placeholder {color: #999;opacity: 0.54;}
+      :-ms-input-placeholder {color: #999;opacity: 0.54;}
+      ::-webkit-file-upload-button {-webkit-appearance: button;font: inherit;}
+      a:focus,a.active,.btn:focus,.btn:active,input[type="checkbox"],input[type="checkbox"]:active,input[type="checkbox"]:focus{outline-width: 0;}
+
+      .f-clear:before,.f-clear:after,.container:before,.container:after,.f-wrap:before,.f-wrap:after{content: "\0020"; display: block; height: 0; overflow: hidden;visibility:hidden;font-size:0;}
+      .f-clear:after,.container:after,.f-wrap:after{ clear: both; }
+      .f-clear,.f-wrap{*zoom:1;}
+
+      .f-row{margin-left: -20px;margin-right: -20px;height: 100%;}
+      .f-col-2{float: left;width:50%;padding-left: 20px;}
+
+      body{padding: 30px;color: #333;}
+      .conv-head{text-align: center;border-bottom: 1px solid #e1e1e1;font-size: 30px}
+      .conv-inbox{margin: 0 auto;text-align: center;}
+      .f-label{display:inline-block;font-size: 40px;vertical-align: middle;margin-right: 5px;-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;font-style:normal;}
+      .f-input{padding:6px 10px;border:0 solid #d1d1d1;border-bottom-width:1px;outline:none;font-size: 26px;width: 120px;}
+      .conv-result-box{text-align: center;}
+      .conv-result-mod{width: 120px;height: 120px;margin: 10px auto;background-color: #000;}
+      .conv-val{font-size: 24px;margin : 0 5px;}
+      .cv-r{color: #f00;}
+      .cv-g{color: #008000;}
+      .cv-b{color: #00f;}
+      .conv-txt{font-size: 26px}
+
+      .conv-rgb-inbox{}
+      .conv-rgb-inbox .f-input{width: 80px;margin-right: 15px;}
+    </style>
+	</head>
+	<body>
+	  <div class="f-row f-clear">
+	    <div class="f-col-2" class="">
+	      <h2 class="conv-head">HEX TO RGB </h2>
+	      <div class="conv-inbox">
+          <div class="f-label">#</div><input type="text" class="f-input" id="hexIn" placeholder="000000" maxlength="6" />
+	      </div>
+	      <div class="conv-result-box">
+	        <div class="conv-result-mod" id="conv-rgbbox"></div>
+	        <div class="conv-result-valbox">
+	          <div class="rgb">
+	            <span class="conv-val cv-r">R : <span  id="rVal">0</span></span>
+	            <span class="conv-val cv-g">G : <span  id="gVal">0</span></span>
+	            <span class="conv-val cv-b">B : <span  id="bVal">0</span></span>
+	          </div>
+	          <div class="conv-txt">RGB(<span id="rgbTxt">0,0,0</span>)</div>
+	        </div>
+	      </div>
+	    </div>
+	    <div class="f-col-2">
+        <h2 class="conv-head">RGB To HEX </h2>
+        <div class="conv-inbox conv-rgb-inbox">
+          <div class="f-label cv-r">R</div><input type="text" class="f-input" id="rgbInR" placeholder="0" maxlength="3" />
+          <div class="f-label cv-g">G</div><input type="text" class="f-input" id="rgbInG" placeholder="0" maxlength="3" />
+          <div class="f-label cv-b">B</div><input type="text" class="f-input" id="rgbInB" placeholder="0" maxlength="3" />
+        </div>
+        <div class="conv-result-box">
+          <div class="conv-result-mod" id="conv-hexbox"></div>
+          <div class="conv-result-valbox">
+            <div class="conv-txt">#<span id="hexTxt">000000</span></div>
+          </div>
+        </div>
+	    </div>
+	  </div>
+
+	  <script type="text/javascript">
+      var regStr = /^([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+      var _reg = /[0-9a-fA-f]/;
+      var _reg1 = /[0-9]/;
+      function $ID (_id){ return document.getElementById(_id); };
+      function hexTorgb(_hex){
+        return {
+          "R" : parseInt(_hex, 16) >> 16,
+          "G" : parseInt(_hex, 16) >> 8 & 255,
+          "B" : parseInt(_hex, 16) & 255,
+        };
+      }
+
+      function showRGBInfo(_v){
+        var _rgb = hexTorgb(_v);
+        $ID('rVal').innerHTML = _rgb.R;
+        $ID('gVal').innerHTML = _rgb.G;
+        $ID('bVal').innerHTML = _rgb.B;
+        $ID('rgbTxt').innerHTML =  _rgb.R + ',' + _rgb.G + ',' + _rgb.B;
+        $ID('conv-rgbbox').style.background = '#'+_v;
+      }
+
+      function showHEXInfo(_arr){
+        var _hex =  ((_arr[2] | _arr[1] << 8 | _arr[0] << 16) | 1 << 24).toString(16).slice(1);
+        $ID('hexTxt').innerHTML = _hex;
+        $ID('conv-hexbox').style.background = '#' + _hex;
+      }
+
+      window.onload = function(){
+        var _hexEL = $ID('hexIn');
+        _hexEL.onkeyup = function (_code){
+          var _this = this,_key = _code.key,_flag = _reg.test(_key);
+          if(!_flag){this.value = this.value.replace(_key,'');}
+          showRGBInfo(this.value);
+        };
+        var _rgbInR = $ID('rgbInR'),_rgbInG = $ID('rgbInG'),_rgbInB = $ID('rgbInB');
+        _rgbInR.onkeyup = function (_code){
+          var _this = this,_key = _code.key,_flag = _reg1.test(_key);
+          if(!_flag){this.value = this.value.replace(_key,'');}
+          var _arr = this.value.split("");
+          for(var i = 0; i < _arr.length;i++){
+            if(!_reg1.test(_arr[i])){
+              this.value = _this.value.replace(_arr[i],'');
+            }
+          }
+          showHEXInfo([_rgbInR.value || 0,_rgbInG.value || 0,_rgbInB.value || 0]);
+        };
+        _rgbInG.onkeyup = function (_code){
+          var _this = this,_key = _code.key,_flag = _reg1.test(_key);
+          if(!_flag){this.value = this.value.replace(_key,'');}
+          var _arr = this.value.split("");
+          for(var i = 0; i < _arr.length;i++){
+            if(!_reg1.test(_arr[i])){
+              this.value = _this.value.replace(_arr[i],'');
+            }
+          }
+          showHEXInfo([_rgbInR.value || 0,_rgbInG.value || 0,_rgbInB.value || 0]);
+        };
+        _rgbInB.onkeyup = function (_code){
+          var _this = this,_key = _code.key,_flag = _reg1.test(_key);
+          if(!_flag){this.value = this.value.replace(_key,'');}
+          var _arr = this.value.split("");
+          for(var i = 0; i < _arr.length;i++){
+            if(!_reg1.test(_arr[i])){
+              this.value = _this.value.replace(_arr[i],'');
+            }
+          }
+          showHEXInfo([_rgbInR.value || 0,_rgbInG.value || 0,_rgbInB.value || 0]);
+        };
+      };
+
+	  </script>
+	</body>
+</html>
